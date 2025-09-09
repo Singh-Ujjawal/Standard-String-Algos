@@ -1,0 +1,50 @@
+class Solution {
+public:
+    std::string preProcess(const std::string& s) {
+        std::string t = "^";
+        for (char c : s) {
+            t += "#" + std::string(1, c);
+        }
+        t += "#$";
+        return t;
+    }
+
+    std::string longestPalindromeSS(const std::string& s) {
+        std::string t = preProcess(s);
+        int n = t.length();
+        std::vector<int> p(n, 0);
+        int c = 0, r = 0;
+
+        for (int i = 1; i < n - 1; ++i) {
+            int mirror = 2 * c - i;
+
+            if (i < r) {
+                p[i] = std::min(r - i, p[mirror]);
+            }
+
+            while (t[i + (1 + p[i])] == t[i - (1 + p[i])]) {
+                p[i]++;
+            }
+
+            if (i + p[i] > r) {
+                c = i;
+                r = i + p[i];
+            }
+        }
+
+        int maxLen = 0;
+        int centerIndex = 0;
+        for (int i = 1; i < n - 1; ++i) {
+            if (p[i] > maxLen) {
+                maxLen = p[i];
+                centerIndex = i;
+            }
+        }
+
+        return s.substr((centerIndex - 1 - maxLen) / 2, maxLen);
+    }
+
+    string longestPalindrome(string s) {
+        return longestPalindromeSS(s);
+    }
+};
