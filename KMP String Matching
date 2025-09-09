@@ -1,0 +1,54 @@
+class Solution {
+public:
+    vector<int> lps(string &s) {
+        int n = s.size();
+        vector<int> dp(n,0);
+
+        int i=0,j=1;
+        while(j<n) {
+            if(s[i]==s[j]) {
+                dp[j] = i + 1;
+                i++;
+                j++;
+            }
+            else {
+                if(i==0) {
+                    dp[j] = 0;
+                    j++;
+                }
+                else {
+                    i = dp[i-1];
+                }
+            }
+        }
+
+        return dp;
+    }
+
+    int strStr(string a, string b) {
+        int m = a.size(), n = b.size();
+        if(a==b) {
+            return 0;
+        }
+        if(b.size()>a.size()) {
+            return -1;
+        }
+
+        vector<int> dp = lps(b);
+
+        int i = 0,j = 0;
+        while(i<m && j<n) {
+           if(a[i]==b[j]) {
+              i++,j++;
+           }
+           else {
+              if(j==0) i++;
+              else {
+                j = dp[j-1];
+              }
+           }
+        }
+        if(j<n) return -1;
+        return (i-j);
+    }
+};
